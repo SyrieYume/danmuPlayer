@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/hls.min.js"></script>
+</head>
+<body>
+    <div id="videoContainer">
+        <video controls>
+        </video>
+        <canvas id="danmuCanvas"></canvas>
+        <div class="resize-handle right"></div>
+        <div class="resize-handle bottom-right"></div>
+    </div>
+
+    <div id="menu">
+        <div style="display: flex;justify-content: space-between; align-items: center;">
+            <b id="title" style="color: #EE7785">暂未上传弹幕</b>
+            <div style="display:flex;justify-content: end;align-items: center;">
+                <input id="danmu-switch" type="checkbox" checked>
+                <img src="icons/fullScreen.svg" id="fullscreen" style="margin-left: 20px;"></img>
+                <img src="icons/settings.svg" id="settings" style="margin-left: 20px;"></img>
+            </div>
+        </div>
+        
+        <br/>
+
+        <b>弹幕相差时长(ms)：</b><input type="text" id="video-offset" value="0" style="margin-right: 40px;">
+        <b>弹幕文件：</b><input type="file" id="file-input">
+        <div class="button">
+            <label for="file-input" style="font-size: 12px;cursor: pointer;">上传文件</label>
+        </div>
+
+        <br/><br/>
+
+        <b>输入视频地址：  </b><input type="text" id="video-url">  <button id="confirm-video-url">确认</button><br/>
+    </div>
+    
+
+</body>
+
+<script src="js/main.js"></script>
+<script>
+    // 创建一个 XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();
+
+    // 打开一个 HTTP 请求
+    xhr.open("GET", "https://api.bilibili.com/x/player/pagelist?bvid=BV18Z42117pL&jsonp=jsonp");
+
+    // 发送 HTTP 请求
+    xhr.send();
+
+    // 监听 HTTP 请求的响应
+    xhr.onload = function() {
+    // 获取 HTTP 请求的响应数据
+    var data = xhr.responseText;
+
+    // 处理 HTTP 请求的响应数据
+    console.log(data);
+    };
+
+</script>
+
+</html>

@@ -1,0 +1,117 @@
+body {
+    padding: 10px;
+}
+
+
+video::-webkit-media-controls-fullscreen-button { display: none; }
+
+#menu {
+    width: fit-content;
+    margin: 10px auto;
+    padding: 15px 20px;
+    border: 2px dashed #39C5BB80;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+b { color:#39c5bccc; }
+
+input[type=text] {
+    color: #39C5BBC0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border:none;
+    outline: none;
+    background-color: #efefef;
+}
+
+input[type=file] {
+    width: 1px;
+    opacity: 0;
+}
+
+input:focus {
+    outline: none;
+    border: none;
+}
+
+#video-url { width: 400px; }
+#video-offset { width: 100px; }
+
+input#danmu-switch {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    background-image: url("../icons/弹幕关闭.svg");
+    background-size: 100% 100%;
+}
+
+input#danmu-switch:checked {
+    background-image: url("../icons/弹幕开启.svg")
+}
+
+button,div.button {
+    display: inline;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #39C5BB80;
+    cursor: pointer;
+}
+
+img#fullscreen{
+    width: 24px;
+    cursor: pointer;
+}
+
+img#settings{
+    width: 30px;
+    cursor: pointer;
+}
+
+#videoContainer {
+    margin: 20px auto;
+    position: relative;
+    width: 1000px;
+    aspect-ratio: 16/9;
+}
+
+video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+}
+
+#danmuCanvas {
+    width: 100%;
+    height: 100%;
+    z-index: 2147483647;
+    position: absolute;
+    pointer-events: none;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    /* background-color: #000; */
+}
+
+.bottom-right {
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+
+.right {
+    top: 15%;
+    right: -5px;
+    height: 70%;
+    cursor: ew-resize;
+}
