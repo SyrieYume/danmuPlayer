@@ -15,6 +15,67 @@ video::-webkit-media-controls-fullscreen-button { display: none; }
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
+#configs {
+    display: flex;
+    justify-content:space-around;
+    flex-direction: column-reverse;
+    width: 640px;
+    height: 350px;
+    box-sizing: border-box;
+    padding: 20px;
+    position: fixed; 
+    border-radius: 10px;
+    background-color: white;
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 9999;
+    display: none;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+}
+
+#configs-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 20px;
+}
+
+#configEditor,#highlighting,#highlighting-content {
+    position: absolute;
+    width: 600px;
+    height: 250px;
+    margin:0;
+    padding: 5px;
+    font-size: 18px;
+    font-family: "黑体";
+    box-sizing: border-box;
+    border-radius: 10px;
+    resize: none;
+    outline: none;
+}
+
+#configEditor{
+    color:transparent;
+    caret-color: #39c5bccc;
+    border: 2px dashed #ffffff00;
+}
+
+#highlighting {
+    padding: 0px;
+}
+
+#highlighting-content, #highlighting {
+    background: none;
+    pointer-events: none;
+}
+
+#highlighting-content {
+    border: 2px dashed #39C5BB80;
+}
+
+
 b { color:#39c5bccc; }
 
 input[type=text] {
@@ -60,6 +121,8 @@ button,div.button {
     padding: 8px 20px;
     border: none;
     border-radius: 8px;
+    color: #3F4B3BC0;
+    font-weight: bold;
     background-color: #39C5BB80;
     cursor: pointer;
 }
@@ -91,7 +154,7 @@ video {
 #danmuCanvas {
     width: 100%;
     height: 100%;
-    z-index: 2147483647;
+    z-index: 100;
     position: absolute;
     pointer-events: none;
 }
@@ -100,7 +163,6 @@ video {
     position: absolute;
     width: 10px;
     height: 10px;
-    /* background-color: #000; */
 }
 
 .bottom-right {

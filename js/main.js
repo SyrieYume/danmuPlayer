@@ -5,11 +5,14 @@ const urlInput = document.querySelector('#video-url');
 const videoOffset = document.querySelector('#video-offset');
 const confirmUrlButton = document.querySelector('#confirm-video-url');
 const fileInput = document.getElementById('file-input');
-const danmuSwitch = document.getElementById("danmu-switch")
-const videoContainer = document.getElementById("videoContainer")
+const danmuSwitch = document.getElementById("danmu-switch");
+const videoContainer = document.getElementById("videoContainer");
+const configEditor = document.getElementById("configEditor");
+const highlightContent = document.getElementById("highlighting-content");
+
 
 confirmUrlButton.onclick = function() {
-    const url = urlInput.value.trim();
+    const url = urlInput.value.trim().replace(/^"(.*)"$/,"$1");
     if(url.endsWith("m3u8")){
         var hls = new Hls();
         hls.attachMedia(video);
@@ -138,6 +141,32 @@ function drawDanmus(){
         })
 }
 
+function initConfig(){
+    const config = `{
+    "speed": ${DanmuConfig.speed},         // 弹幕速度
+    "size": ${DanmuConfig.size},         // 弹幕文字大小
+    "opacity": ${DanmuConfig.opacity},     // 弹幕不透明度
+    "area": ${DanmuConfig.area},       // 弹幕显示区域
+    "shadowBlur": ${DanmuConfig.shadowBlur}     // 弹幕文字阴影大小
+}`
+    $("#configEditor")[0].innerHTML = config
+    updateHighlight()
+    $("#configs")[0].style.display = "block"
+}
+
+function updateHighlight(){
+    highlightContent.innerHTML = configEditor.value;
+    highlightContent.dataset.highlighted = "";
+    hljs.highlightElement(highlightContent);
+}
+
+function setConfig(){
+    var json = $("#configEditor")[0].value.replace(/\/\/.*\n/gm,"\n")
+    Object.assign(DanmuConfig, JSON.parse(json))
+    initCtx()
+    $("#configs")[0].style.display = "none"
+}
+
 // 缩放功能
 const resizeHandles = document.getElementsByClassName("resize-handle");
 
@@ -174,6 +203,8 @@ function startResize(event) {
     }
 }
 
+
+
 document.getElementById("fullscreen").onclick = () => {
     videoContainer.requestFullscreen()
 }
@@ -190,7 +221,6 @@ video.addEventListener('timeupdate', () => {
 video.addEventListener("seeking", () => {
     displayDanmus = []
     setDanmuIndex()
-    console.log("seek" + "," + danmuIndex)
 });
 
 video.addEventListener("pause", () => {

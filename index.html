@@ -4,7 +4,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Player</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/atom-one-light.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/highlight.min.js"></script>
     <script src="js/hls.min.js"></script>
+    <script src="js/jsonp.js"></script>
 </head>
 <body>
     <div id="videoContainer">
@@ -21,7 +25,7 @@
             <div style="display:flex;justify-content: end;align-items: center;">
                 <input id="danmu-switch" type="checkbox" checked>
                 <img src="icons/fullScreen.svg" id="fullscreen" style="margin-left: 20px;"></img>
-                <img src="icons/settings.svg" id="settings" style="margin-left: 20px;"></img>
+                <img src="icons/settings.svg" id="settings" onclick="initConfig()" style="margin-left: 20px;"></img>
             </div>
         </div>
         
@@ -37,30 +41,23 @@
 
         <b>输入视频地址：  </b><input type="text" id="video-url">  <button id="confirm-video-url">确认</button><br/>
     </div>
+
+    <div id="configs">
+        <textarea id="configEditor" oninput="updateHighlight()" rows="12"></textarea>
+        <pre id="highlighting" aria-hidden="true"><code class="language-javascript" id="highlighting-content"></code></pre>
+        <div id="configs-buttons">
+            <button onclick="setConfig()" style="background-color: #EE7785;">保存</button>
+            <button onclick="$('#configs')[0].style.display='none'" style="margin-left: 40px;background-color:#c0c0c0;">取消</button>
+        </div>
+    </div>
     
 
 </body>
 
 <script src="js/main.js"></script>
+
 <script>
-    // 创建一个 XMLHttpRequest 对象
-    var xhr = new XMLHttpRequest();
-
-    // 打开一个 HTTP 请求
-    xhr.open("GET", "https://api.bilibili.com/x/player/pagelist?bvid=BV18Z42117pL&jsonp=jsonp");
-
-    // 发送 HTTP 请求
-    xhr.send();
-
-    // 监听 HTTP 请求的响应
-    xhr.onload = function() {
-    // 获取 HTTP 请求的响应数据
-    var data = xhr.responseText;
-
-    // 处理 HTTP 请求的响应数据
-    console.log(data);
-    };
-
+    // jsonpGet("https://danmuplayer.syrieitoh.workers.dev/?path=danmu&bvid=BV1ZP411g7B5")
 </script>
 
 </html>
