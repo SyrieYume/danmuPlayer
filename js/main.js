@@ -124,7 +124,6 @@ function updateDanmus(){
             
         else break
     }
-    console.log(currentTime,danmuIndex)
 }
 
 function drawDanmus(){
