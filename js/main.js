@@ -117,11 +117,14 @@ function updateDanmus(){
     currentTime = Math.round(video.currentTime * 1000)
     for(var i = danmuIndex; i < danmus.length; i++){
         const data = danmus[i]
-        danmuIndex = i + 1
-        if(data.time <= currentTime)
+        if(data.time <= currentTime){
             addDanmu(data)
+            danmuIndex = i + 1
+        }
+            
         else break
     }
+    console.log(currentTime,danmuIndex)
 }
 
 function drawDanmus(){
