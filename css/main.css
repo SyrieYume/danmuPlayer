@@ -140,7 +140,7 @@ img#settings{
 #videoContainer {
     margin: 20px auto;
     position: relative;
-    width: 1000px;
+    width: 800px;
     aspect-ratio: 16/9;
 }
 
@@ -163,11 +163,10 @@ video {
 #danmuProgressBar {
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 15px;
+    width: calc(100% - 30px);
     z-index: 90;
     pointer-events: none;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
     transform: scaleY(-1);
     opacity: 0;
     transition: all .7s ease;

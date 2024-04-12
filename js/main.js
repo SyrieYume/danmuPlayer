@@ -23,12 +23,13 @@ confirmUrlButton.onclick = function() {
 };
 
 const DanmuConfig = {
-    speed: 5,         // 弹幕速度
-    size: 20,         // 弹幕文字大小
-    opacity: 0.8,     // 弹幕不透明度
-    area: 0.65,       // 弹幕显示区域
-    shadowBlur: 6,    // 弹幕文字阴影大小
-    offsetY: 0,       // 弹幕偏移量
+    speed: 5,            // 弹幕速度
+    size: 20,            // 弹幕文字大小
+    opacity: 0.8,        // 弹幕不透明度
+    area: 0.65,          // 弹幕显示区域
+    shadowBlur: 6,       // 弹幕文字阴影大小
+    danmuLineHeight: 20, // 弹幕行高
+    offsetY: 0,          // 弹幕偏移量
     display: true
 }
 
@@ -50,7 +51,14 @@ function initCtx(){
     ctx.shadowColor = "#10101080"
 }
 
-initCtx()
+function init(){
+    const danmuConfigData = localStorage.getItem("danmuConfig")
+    if(danmuConfigData)
+        Object.assign(DanmuConfig, JSON.parse(danmuConfigData))
+    initCtx()
+}
+
+init()
 
 var danmus = []
 
@@ -108,15 +116,15 @@ function addDanmu(data){
     
     if(data.mode <= 3) {
         x = Math.round(danmuCanvas.width + Math.random() * 40)
-        y = Math.round(Math.random() * danmuCanvas.height * DanmuConfig.area/DanmuConfig.size + 1) * DanmuConfig.size
+        y = Math.round(Math.random() * danmuCanvas.height * DanmuConfig.area/DanmuConfig.danmuLineHeight + 1) * DanmuConfig.danmuLineHeight
     }  
     else if(data.mode == 4){
         x = 400
-        y = Math.round(Math.random() * 10 + 1) * DanmuConfig.size
+        y = Math.round(Math.random() * 10 + 1) * DanmuConfig.danmuLineHeight
     }
     else if(data.mode == 5){
         x = 400
-        y = Math.round(danmuCanvas.height - (Math.round(Math.random() * 10 + 1) * DanmuConfig.size))
+        y = Math.round(danmuCanvas.height - (Math.round(Math.random() * 10 + 1) * DanmuConfig.danmuLineHeight))
     }
     
     y += DanmuConfig.offsetY
@@ -138,8 +146,7 @@ function updateDanmus(){
         if(data.time <= currentTime){
             addDanmu(data)
             danmuIndex = i + 1
-        }
-            
+        } 
         else break
     }
 }
@@ -163,12 +170,13 @@ function drawDanmus(){
 
 function initConfig(){
     const config = `{
-    "speed": ${DanmuConfig.speed},         // 弹幕速度
-    "size": ${DanmuConfig.size},         // 弹幕文字大小
-    "opacity": ${DanmuConfig.opacity},     // 弹幕不透明度
-    "area": ${DanmuConfig.area},       // 弹幕显示区域
-    "shadowBlur": ${DanmuConfig.shadowBlur}     // 弹幕文字阴影大小
-    "offsetY": ${DanmuConfig.offsetY},       // 弹幕偏移量
+    "speed": ${DanmuConfig.speed},            // 弹幕速度
+    "size": ${DanmuConfig.size},            // 弹幕文字大小
+    "opacity": ${DanmuConfig.opacity},        // 弹幕不透明度
+    "area": ${DanmuConfig.area},          // 弹幕显示区域
+    "shadowBlur": ${DanmuConfig.shadowBlur},       // 弹幕文字阴影大小
+    "danmuLineHeight": ${DanmuConfig.danmuLineHeight}, // 弹幕行高
+    "offsetY": ${DanmuConfig.offsetY}           // 弹幕偏移量
 }`
     $("#configEditor")[0].innerHTML = config
     updateHighlight()
@@ -185,6 +193,7 @@ function setConfig(){
     var json = $("#configEditor")[0].value.replace(/\/\/.*\n/gm,"\n")
     Object.assign(DanmuConfig, JSON.parse(json))
     initCtx()
+    localStorage.setItem("danmuConfig",json)
     $("#configs")[0].style.display = "none"
 }
 
