@@ -23,7 +23,7 @@ confirmUrlButton.onclick = function() {
 };
 
 const DanmuConfig = {
-    speed: 5,            // 弹幕速度
+    speed: 10,           // 弹幕速度
     size: 20,            // 弹幕文字大小
     opacity: 0.8,        // 弹幕不透明度
     area: 0.65,          // 弹幕显示区域
@@ -132,9 +132,9 @@ function addDanmu(data){
 
 }
 
-function moveDanmus(){
+function moveDanmus(distance){
     displayDanmus.forEach((item) => {
-        item.x -= DanmuConfig.speed
+        item.x -= distance
     })
     displayDanmus = displayDanmus.filter((item) => {return item.x > -100})
 }
@@ -170,7 +170,7 @@ function drawDanmus(){
 
 function initConfig(){
     const config = `{
-    "speed": ${DanmuConfig.speed},            // 弹幕速度
+    "speed": ${DanmuConfig.speed},           // 弹幕速度
     "size": ${DanmuConfig.size},            // 弹幕文字大小
     "opacity": ${DanmuConfig.opacity},        // 弹幕不透明度
     "area": ${DanmuConfig.area},          // 弹幕显示区域
@@ -322,11 +322,13 @@ video.addEventListener("play", () => {
 
 
 // 每隔20ms更新一次弹幕位置
-setInterval(()=>{
+let lastTime = new Date()
+setInterval(() => {
+    let currentTime = new Date()
     if(!VideoConfig.pause){
-        moveDanmus()
+        moveDanmus(Math.ceil(DanmuConfig.speed * (currentTime - lastTime)/40))
         drawDanmus()
     }
-    
-},20)
+    lastTime = currentTime
+},40)
 
