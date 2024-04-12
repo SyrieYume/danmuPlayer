@@ -9,6 +9,7 @@ const danmuSwitch = document.getElementById("danmu-switch");
 const videoContainer = document.getElementById("videoContainer");
 const configEditor = document.getElementById("configEditor");
 const highlightContent = document.getElementById("highlighting-content");
+const prograssBar = $("#danmuProgressBar")[0];
 
 
 confirmUrlButton.onclick = function() {
@@ -27,6 +28,7 @@ const DanmuConfig = {
     opacity: 0.8,     // 弹幕不透明度
     area: 0.65,       // 弹幕显示区域
     shadowBlur: 6,    // 弹幕文字阴影大小
+    offsetY: 0,       // 弹幕偏移量
     display: true
 }
 
@@ -55,15 +57,30 @@ var danmus = []
 fileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
+
     reader.readAsText(file);
 
     reader.onload = () => {
         const fileContent = reader.result;
-        danmus = JSON.parse(fileContent)
-        const offsetTime = Number(videoOffset.value)
-        for(var i=0; i<danmus.length; i++)
-            danmus[i].time += offsetTime
-        title.innerHTML = file.name.split(".")[0]
+
+        if(file.name.endsWith(".m3u8")){
+            const blob = new Blob([fileContent], { type: "application/x-mpegURL" });
+            const url = URL.createObjectURL(blob);
+            console.log(url)
+            var hls = new Hls();
+            hls.attachMedia(video);
+            hls.loadSource(url);
+            return
+        }
+        else{
+            danmus = JSON.parse(fileContent)
+            const offsetTime = Number(videoOffset.value)
+            for(var i=0; i<danmus.length; i++)
+                danmus[i].time += offsetTime
+            title.innerHTML = file.name.split(".")[0]
+            drawDanmuProgressBar()
+        }
+        
     };
 });
 
@@ -91,17 +108,18 @@ function addDanmu(data){
     
     if(data.mode <= 3) {
         x = Math.round(danmuCanvas.width + Math.random() * 40)
-        y = Math.round(Math.random() * danmuCanvas.height * DanmuConfig.area/25) * 25 + 17
+        y = Math.round(Math.random() * danmuCanvas.height * DanmuConfig.area/DanmuConfig.size + 1) * DanmuConfig.size
     }  
     else if(data.mode == 4){
         x = 400
-        y = Math.round(Math.random() * 10) * 25 + 17
+        y = Math.round(Math.random() * 10 + 1) * DanmuConfig.size
     }
     else if(data.mode == 5){
         x = 400
-        y = Math.round(danmuCanvas.height - (Math.round(Math.random() * 10) * 25 + 17))
+        y = Math.round(danmuCanvas.height - (Math.round(Math.random() * 10 + 1) * DanmuConfig.size))
     }
     
+    y += DanmuConfig.offsetY
     displayDanmus.push({data, x, y})
 
 }
@@ -150,6 +168,7 @@ function initConfig(){
     "opacity": ${DanmuConfig.opacity},     // 弹幕不透明度
     "area": ${DanmuConfig.area},       // 弹幕显示区域
     "shadowBlur": ${DanmuConfig.shadowBlur}     // 弹幕文字阴影大小
+    "offsetY": ${DanmuConfig.offsetY},       // 弹幕偏移量
 }`
     $("#configEditor")[0].innerHTML = config
     updateHighlight()
@@ -202,8 +221,51 @@ function startResize(event) {
         document.removeEventListener("mousemove", resize);
         document.removeEventListener("mouseup", stopResize);
         initCtx()
+        drawDanmuProgressBar()
     }
 }
+
+// 绘制高能进度条
+function drawDanmuProgressBar(){
+    const danmuGraph = $("#danmuGraph")[0]
+
+    const duration = 1420_000
+    const seg_time = 5000
+
+    const width = videoContainer.getBoundingClientRect().width
+    const height = 70
+
+    const path = ["M 0 0"];
+
+    let danmu_nums = []
+    let max_num = 0
+    for(let t = seg_time,i=0; t<duration; t += seg_time){
+        let danmu_num = 0
+        for(;i < danmus.length;){
+            if(danmus[i].time < t){
+                danmu_num++;
+                i++;
+            }else break;
+        }
+        if(danmu_num > max_num)
+            max_num = danmu_num
+        danmu_nums.push(danmu_num)
+    }
+
+    for(let t = seg_time,i=0; t<duration; t += seg_time, i++){
+        x = Math.ceil(t/duration * width)
+        y = Math.ceil(danmu_nums[i]/max_num * height + 10)
+        path.push(`L ${x} ${y}`)
+    }
+
+    path.pop()
+    path.push(`L ${width} 0`)
+
+    prograssBar.setAttribute("width", width)
+    prograssBar.setAttribute("height", height + 10)
+    danmuGraph.setAttribute("d", path.join(" "))
+}
+
 
 
 
@@ -213,6 +275,22 @@ document.getElementById("fullscreen").onclick = () => {
 
 videoContainer.addEventListener("fullscreenchange", () => {
     initCtx()
+    drawDanmuProgressBar()
+})
+
+videoContainer.addEventListener("mousemove", (event) => {
+    const rect = prograssBar.getBoundingClientRect();
+
+    if (event.clientX >= rect.left && event.clientX <= rect.right &&
+        event.clientY >= rect.top && event.clientY <= rect.bottom) {
+        prograssBar.style.opacity = 1
+    } else {
+        prograssBar.style.opacity = 0
+    }
+})
+
+videoContainer.addEventListener("mouseleave", ()=>{
+    prograssBar.style.opacity = 0
 })
 
 // 监听视频状态变化
