@@ -330,5 +330,5 @@ setInterval(() => {
         drawDanmus()
     }
     lastTime = currentTime
-},40)
+},20)
 
