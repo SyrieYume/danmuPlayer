@@ -30,6 +30,7 @@ const DanmuConfig = {
     shadowBlur: 6,       // 弹幕文字阴影大小
     danmuLineHeight: 20, // 弹幕行高
     offsetY: 0,          // 弹幕偏移量
+    weight: 0,           // 弹幕权重筛选
     display: true
 }
 
@@ -82,6 +83,14 @@ fileInput.addEventListener('change', (event) => {
         }
         else{
             danmus = JSON.parse(fileContent)
+
+            // 根据权重随机筛选弹幕
+            const filterPercentage = danmus.length > 10000? (0.65 * 10000 / danmus.length) : 0.65
+
+            if(DanmuConfig.weight > 0)
+                danmus = danmus.filter((it) => {
+                    return (it.weight > DanmuConfig.weight) || (Math.random() < filterPercentage)
+                })
             const offsetTime = Number(videoOffset.value)
             for(var i=0; i<danmus.length; i++)
                 danmus[i].time += offsetTime
@@ -176,7 +185,8 @@ function initConfig(){
     "area": ${DanmuConfig.area},          // 弹幕显示区域
     "shadowBlur": ${DanmuConfig.shadowBlur},       // 弹幕文字阴影大小
     "danmuLineHeight": ${DanmuConfig.danmuLineHeight}, // 弹幕行高
-    "offsetY": ${DanmuConfig.offsetY}           // 弹幕偏移量
+    "offsetY": ${DanmuConfig.offsetY},          // 弹幕偏移量
+    "weight": ${DanmuConfig.weight}            // 弹幕权重筛选
 }`
     $("#configEditor")[0].innerHTML = config
     updateHighlight()
